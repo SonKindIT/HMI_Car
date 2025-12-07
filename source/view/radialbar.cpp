@@ -247,3 +247,9 @@ void RadialBar::setFontRad(const QFont &newFontRad)
     m_fontRad = newFontRad;
     emit fontRadChanged();
 }
+
+void RadialBar::setBatteryChanged(qint16 curValue)
+{
+    setCurValue(curValue);
+    update();
+}

@@ -103,6 +103,9 @@ public:
     void setFontText(const QFont &newFontText);
     QFont fontRad() const;
     void setFontRad(const QFont &newFontRad);
+
+public slots:
+    void setBatteryChanged(qint16 curValue);
 };
 
 #endif // RADIALBAR_H
