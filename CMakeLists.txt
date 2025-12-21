@@ -9,6 +9,9 @@ find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -25,6 +28,9 @@ qt_add_qml_module(appCarHmi
         SOURCES source/view/radialbar.h source/view/radialbar.cpp
         SOURCES source/view/segmentbar.h source/view/segmentbar.cpp
         SOURCES source/controller/hmicontroller.h source/controller/hmicontroller.cpp
+        SOURCES source/model/appmodel.h source/model/appmodel.cpp
+        SOURCES service/vehicleservices.h service/vehicleservices.cpp
+        SOURCES common/types/vehicletypes.h
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
@@ -41,6 +47,9 @@ set_target_properties(appCarHmi PROPERTIES
 target_link_libraries(appCarHmi
     PRIVATE Qt6::Quick
 )
+target_link_libraries(appCarHmi PRIVATE Qt6::Core)
+target_link_libraries(appCarHmi PRIVATE Qt6::Core)
+target_link_libraries(appCarHmi PRIVATE Qt6::Core)
 target_link_libraries(appCarHmi PRIVATE Qt6::Core)
 target_link_libraries(appCarHmi PRIVATE Qt6::Core)
 target_link_libraries(appCarHmi PRIVATE Qt6::Core)

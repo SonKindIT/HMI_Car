@@ -88,6 +88,7 @@ void RadialBar::setCurValue(qint16 newCurValue)
         return;
     m_curValue = newCurValue;
     emit curValueChanged();
+    update();
 }
 
 qreal RadialBar::startAngle() const

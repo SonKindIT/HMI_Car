@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Effects
 import QtQuick.Layouts
 import CustomControls
+import CommonType
 
 ApplicationWindow {
 
@@ -50,7 +51,7 @@ ApplicationWindow {
 
         Label{
             id: timelblId
-            text: "19:30"
+            text: hmiModel.curTime
             font{
                 pixelSize: 32
                 family: "Inter"
@@ -62,7 +63,7 @@ ApplicationWindow {
         }
 
         Label{
-            text: "06/12/2025"
+            text: hmiModel.curDate
             font{
                 pixelSize: 20
                 family: "Inter"
@@ -120,13 +121,7 @@ ApplicationWindow {
             height : 338 * screenRatio
             x: 282 * screenRatio
             y: 317 * screenRatio
-
-            Connections{
-                target: Controller
-                function onCurrentBatChanged(battery){
-                    radBarId.setBatteryChanged(battery);
-                }
-            }
+            curValue: hmiModel.curBattery
         }
 
         //Segment Bar
@@ -137,13 +132,7 @@ ApplicationWindow {
             height: 25 * screenRatio
             x : 353 * screenRatio
             y : 886 * screenRatio
-
-            Connections{
-                target: Controller
-                function onCurrentSpeedChanged(speed){
-                    segBarId.setCurrentSpeed(speed)
-                }
-            }
+            curValue: hmiModel.curSpeed
         }
 
         Label{
@@ -152,7 +141,7 @@ ApplicationWindow {
             height: 39 * screenRatio
             x : segBarId.x - width - 5
             y: 880 * screenRatio
-            text: Controller.currentTemp + " °F"
+            text: hmiModel.curTemp + " °F"
             color: "white"
             font{
                 pixelSize: 20
@@ -168,7 +157,7 @@ ApplicationWindow {
             height: 62 * screenRatio
             x : 871 * screenRatio
             y: 270 * screenRatio
-            text: Controller.currentSpeed
+            text: hmiModel.curSpeed.toString()
             color: "#01E6DE"
             font{
                 pixelSize: 134 * screenRatio
@@ -197,6 +186,16 @@ ApplicationWindow {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
 
+            Image{
+                id:carId
+                source:"qrc:/assets/car.png"
+                height: implicitHeight * screenRatio;
+                width: implicitWidth * screenRatio;
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 40
+            }
+
             Image {
                 id: roadLeftId
                 source: "qrc:/assets/Vector1.svg"
@@ -223,6 +222,7 @@ ApplicationWindow {
         }
 
         Item{
+            id: limitSpeedId
             width: 130 * screenRatio
             height: width
             x : 895 * screenRatio
@@ -278,7 +278,7 @@ ApplicationWindow {
                 Column{
                     Text {
                         id: disTxtId
-                        text: qsTr("188 km")
+                        text: hmiModel.curDistCar.toString() + qsTr(" km")
                         color: "white"
                         font{
                             family: "Inter"
@@ -317,7 +317,7 @@ ApplicationWindow {
 
             verticalAlignment: Text.AlignVCenter
             color: "white"
-            text: qsTr("34 mpg")
+            text: hmiModel.curFualCar.toString() + qsTr(" mpg")
             font{
                 weight: Font.Medium
                 family: "Inter"
@@ -353,7 +353,7 @@ ApplicationWindow {
             y : 619 * screenRatio
 
             color: "white"
-            text: qsTr("78 mph")
+            text: hmiModel.curSpeed.toString() + qsTr(" mph")
             font{
                 weight: Font.Medium
                 family: "Inter"
@@ -458,7 +458,7 @@ ApplicationWindow {
             color: "#32D74B"
             text: qsTr("READY")
             font{
-                weight: Font.Regular
+                weight: Font.Normal
                 family: "Inter"
                 pixelSize: 32 * screenRatio
             }
@@ -472,10 +472,12 @@ ApplicationWindow {
                 color: "#FFFFFF"
                 text: qsTr("P")
                 font{
-                    weight: Font.Regular
+                    weight: Font.Normal
                     family: "Inter"
                     pixelSize: 32 * screenRatio
                 }
+
+                opacity: hmiModel.curParkState === VehicleTypes.Gear.P ? 1.0 : 0.3
             }
 
             Text {
@@ -483,10 +485,10 @@ ApplicationWindow {
                 y : 870 * screenRatio
 
                 color: "#FFFFFF"
-                opacity: 0.3
+                opacity: hmiModel.curParkState === VehicleTypes.Gear.R ? 1.0 : 0.3
                 text: qsTr("R")
                 font{
-                    weight: Font.Regular
+                    weight: Font.Normal
                     family: "Inter"
                     pixelSize: 32 * screenRatio
                 }
@@ -497,10 +499,10 @@ ApplicationWindow {
                 y : 870 * screenRatio
 
                 color: "#FFFFFF"
-                opacity: 0.3
+                opacity: hmiModel.curParkState === VehicleTypes.Gear.N ? 1.0 : 0.3
                 text: qsTr("N")
                 font{
-                    weight: Font.Regular
+                    weight: Font.Normal
                     family: "Inter"
                     pixelSize: 32 * screenRatio
                 }
@@ -511,10 +513,10 @@ ApplicationWindow {
                 y : 870 * screenRatio
 
                 color: "#FFFFFF"
-                opacity: 0.3
+                opacity: hmiModel.curParkState === VehicleTypes.Gear.D ? 1.0 : 0.3
                 text: qsTr("D")
                 font{
-                    weight: Font.Regular
+                    weight: Font.Normal
                     family: "Inter"
                     pixelSize: 32 * screenRatio
                 }
@@ -525,7 +527,7 @@ ApplicationWindow {
 
     Component.onCompleted:
     {
-        console.log(segBarId.curValue)
+        console.log(hmiModel.curParkState)
     }
 
 }

@@ -1,72 +1,28 @@
 #include "hmicontroller.h"
-#include "../view/radialbar.h"
-#include <QTimer>
 
-HmiController::HmiController(QObject *parent):
-    QObject{parent},
-    m_currentBat(0),
-    m_currentTemp(0),
-    m_currentSpeed(0)
+HmiController::HmiController(AppModel *model, QObject *parent)
+    : QObject{parent},
+    m_appService(this),
+    m_model(model)
 {
-    //Dummy Data
-    QTimer *timer = new QTimer(this);
-    connect(timer, &QTimer::timeout, this, [=](){
-        m_currentBat++;
-        if(m_currentBat > 100)
-            m_currentBat = 0;
+    connect(&m_appService, &VehicleServices::currentDateTimeChanged, this, &HmiController::SetModelDateTime);
 
-        m_currentSpeed+=5;
-        if(m_currentSpeed > 160)
-            m_currentSpeed = 0;
-
-        m_currentTemp+=2;
-        if(m_currentTemp > 150)
-            m_currentTemp = 0;
-
-        emit currentSpeedChanged(m_currentSpeed);
-        emit currentBatChanged(m_currentBat);
-        emit currentTempChanged(m_currentTemp);
-
-
-    });
-    timer->start(100);
+    connect(&m_appService, &VehicleServices::speedCarChanged, m_model, &AppModel::setCurSpeed);
+    connect(&m_appService, &VehicleServices::tempCarChanged, m_model, &AppModel::setCurTemp);
+    connect(&m_appService, &VehicleServices::batteryCarChanged, m_model, &AppModel::setCurBattery);
+    connect(&m_appService, &VehicleServices::fualCarChanged, m_model, &AppModel::setCurFualCar);
+    connect(&m_appService, &VehicleServices::distCarChanged, m_model, &AppModel::setCurDistCar);
+    connect(&m_appService, &VehicleServices::absIndicatorChanged, m_model, &AppModel::setCurAbsInd);
+    connect(&m_appService, &VehicleServices::parkBrakeIndicatorChanged, m_model, &AppModel::setCurParkBrakeInd);
+    connect(&m_appService, &VehicleServices::errIndicatorChanged, m_model, &AppModel::setCurErrInd);
+    connect(&m_appService, &VehicleServices::seatBeltIndicatorChanged, m_model, &AppModel::setCurSeatBeltInd);
+    connect(&m_appService, &VehicleServices::parkStateChanged, m_model, &AppModel::setCurParkState);
 }
 
-qint16 HmiController::currentBat() const
+void HmiController::SetModelDateTime(QDateTime curDateTime)
 {
-    return m_currentBat;
+    m_model->setCurDate(curDateTime.date().toString("dd/MM/yyyy"));
+    m_model->setcurTime(curDateTime.time().toString("HH:mm:ss"));
 }
 
-void HmiController::setCurrentBat(qint16 newCurrentBat)
-{
-    if (m_currentBat == newCurrentBat)
-        return;
-    m_currentBat = newCurrentBat;
-    emit currentBatChanged(m_currentBat);
-}
 
-qint16 HmiController::currentTemp() const
-{
-    return m_currentTemp;
-}
-
-void HmiController::setCurrentTemp(qint16 newCurrentTemp)
-{
-    if (m_currentTemp == newCurrentTemp)
-        return;
-    m_currentTemp = newCurrentTemp;
-    emit currentTempChanged(newCurrentTemp);
-}
-
-qint16 HmiController::currentSpeed() const
-{
-    return m_currentSpeed;
-}
-
-void HmiController::setCurrentSpeed(qint16 newCurrentSpeed)
-{
-    if (m_currentSpeed == newCurrentSpeed)
-        return;
-    m_currentSpeed = newCurrentSpeed;
-    emit currentSpeedChanged(newCurrentSpeed);
-}

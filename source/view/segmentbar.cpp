@@ -63,6 +63,7 @@ void SegmentBar::setCurValue(qint16 newCurValue)
         return;
     m_curValue = newCurValue;
     emit curValueChanged();
+    update();
 }
 
 QColor SegmentBar::activeColor() const
